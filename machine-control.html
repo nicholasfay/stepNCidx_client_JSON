@@ -1,0 +1,125 @@
+<html>
+<head>
+
+<script>
+var VIEW_FRAME;
+
+function setViewer(v) {VIEW_FRAME=v;}
+
+function getGeomView() {return VIEW_FRAME.getGeomView();}
+
+function getView() {return getGeomView().getView();}
+
+function redrawView() {VIEW_FRAME.draw();}
+
+function syncForm() {
+    var form = document.controls;
+    form.zoom.value = getView().getZoom();
+}
+
+function zoom_view(e) {
+  var zoom = parseFloat(e.form.zoom.value);
+  if (isNaN(zoom))
+    throw new Error ("Could not parse zoom as number: " +zoom);
+  getView().setZoom(zoom);
+  redrawView();
+}
+
+function zoom_in(e) {
+  var zoom = getView().getZoom() * 1.5;
+  getView().setZoom(zoom);
+
+  syncForm();
+  redrawView();
+}
+
+function zoom_out(e) {
+  var zoom = getView().getZoom() / 1.5;
+  getView().setZoom(zoom);
+
+  syncForm();
+
+  redrawView();
+}
+
+function mode_change(m) {
+  getGeomView().setMouseMode(m);
+}
+
+</script>
+
+<!--
+-------------------------------
+var VIEWER;
+
+function setViewer(v) {VIEWER=v;}
+
+function getView() {return getGeomView().getView();}
+
+function zoom_view(e) {
+  var zoom = parseFloat(e.form.zoom.value);
+  if (isNaN(zoom))
+    throw new Error ("Could not parse zoom as number: " +zoom);
+  getView().setZoom(zoom);
+  VIEWER.draw();
+}
+
+function zoom_in(e) {
+  var zoom = VIEWER.scene.getZoom() * 1.5;
+  VIEWER.scene.setZoom(zoom);
+
+  e.form.zoom.value = zoom;
+
+  VIEWER.draw();
+}
+
+function zoom_out(e) {
+  var zoom = VIEWER.scene.getZoom() / 1.5;
+  VIEWER.scene.setZoom(zoom);
+
+  e.form.zoom.value = zoom;
+
+  VIEWER.draw();
+}
+
+function mode_change(m) {
+  console.log ("Mode change "+m);
+
+  VIEWER.setMouseMode(m);
+}
+
+-->
+
+</head>
+
+<body onload="document.controls.reset()">
+
+<form name="controls" onsubmit="return false;">
+<table width="100%">
+<tr>
+<td><img src=images/stlogo_sm.gif></td>
+<td>
+<div style="padding-right: 1em;">
+<input type="radio" name="mode" value="rotate" onchange="mode_change('rotate')" checked>Rotate
+<input type="radio" name="mode" value="pan" onchange="mode_change('pan')">Pan
+</div>
+</td>
+<td>
+<div style="padding-right: 1em;">
+Zoom: <input name="zoom" type="text" size=5 onchange="zoom_view(this);" value="1.0" > 
+<input type="button" value="+" onClick='zoom_in(this);'>
+<input type="button" value="-" onClick='zoom_out(this);'><br>
+</div>
+</td>
+
+<td>
+<p style="font-size: 80%; text-align: right;">
+<a href="http://www.steptools.com/" TARGET="_top">[steptools.com]</a><br>
+<a href="index.html" TARGET="_top">[back]</a>
+</td>
+</tr>
+</table>
+</form>
+
+</body>
+</html>

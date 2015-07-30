@@ -1,0 +1,131 @@
+<html>
+
+<head>
+<script>
+function getAssemblyNode() {return document.getElementById("assembly");}
+
+function expand_all() {
+  ASSEMBLY.expandTree();
+  return false;
+}
+
+function collapse_all() {
+  ASSEMBLY.collapseTree();
+  return false;
+}
+
+</script>
+
+
+
+<style type="text/css">
+
+.unselected {
+    color: #000000;
+}
+
+.invisible {font-weight: normal}
+.visible {font-weight: bold}
+
+  /* for collapsible tree nodes */
+#assembly  LI {
+    list-style-type: none;
+
+    /* Disable selection of menu items.  Otherwise, stuff gets highlighted,
+     * when the tree nodes are toggled.
+     */
+    -moz-user-select: none;
+}
+
+#assembly UL {list-style-image: url(minus.gif)} 
+#assembly LI.closed {list-style-image: url(plus.gif)} 
+#assembly LI.closed UL {display: none}
+#assembly LI.leaf {list-style-image: url(bullet.gif)} 
+
+.noshell {
+    color: #aaaaee;
+    font-style: italic;
+    font-weight: normal;
+}
+
+.selected {
+    color: #c03030;
+}
+
+.menu-target {
+    background-color: #c0c000;
+}
+
+</style>
+
+
+<style type-"text/css">
+.menu li:hover {
+    border: 1px solid black;
+    background: #dde8dd;
+}
+
+.menu li { 
+    whitespace: nowrap;
+    border: 1px solid white;
+}
+
+.menu {
+    border: 1px solid black;
+    position:absolute;
+    white-space: nowrap;
+    display: none;
+    background: white;
+}
+
+.menu ul {
+    list-style-type: none;
+    padding: .5em;
+    margin: 0;
+}
+
+.menu-visible {
+    display:block;
+}
+
+#menu_download {
+    display:none;
+}
+
+</style>
+
+
+</head>
+
+<body>
+<P><b>Assembly Tree</b> (Right click for menu and STEP file download)<br>
+<a onclick="expand_all();" href="#">[Expand All]</a>
+<a onclick="collapse_all();" href="#">[Collapse All]</a>
+<p>
+<span id="assembly"></span>
+
+<div class="menu" id="menu">
+<ul>
+<li class="menu_show">Show</li>
+<li class="menu_show_only">Show only this</li>
+<li class="menu_hide">Hide</li>
+<li class="menu_show_all">Show All</li>
+<hr>
+<li class="menu_select">Select</li>
+<li class="menu_select_all">Select all Instances</li>
+<li class="menu_unselect">Unselect</li>
+<li class="menu_unselect_all">Clear All Selections</li>
+<hr>
+<li class="menu_open_subpart">Open in New Window</li>
+<hr>
+<li class="menu_load_part">Load Part</li>
+<li class="menu_unload_part">Unload Part</li>
+<hr>
+<li class="menu_edit_links">Edit Links</li>
+<hr>
+<li class="menu_props">Download STEP File</li>
+<li id="menu_download" class="menu_nothing"></li>
+</ul>  
+</div>
+</body>
+</html>

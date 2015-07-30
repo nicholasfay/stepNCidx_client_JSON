@@ -1,0 +1,48 @@
+<html>
+<head>
+<title>STEP Index</title>
+
+<script src="sti_utils.js"> </script>
+
+<script>
+function init() {
+    var view_frame = window.view;
+    var ctl_frame = window.control;
+    var asm_frame = window.assembly;
+
+    if (!view_frame)
+        throw new Error ("No view frame");
+
+    ctl_frame.setViewer(view_frame);
+
+    view_frame.setup_page(asm_frame, parse_search(location.search),
+      function(view) {
+        view_frame.draw();
+        ctl_frame.syncForm();
+      });
+}
+
+
+function saveComplete(path) {
+   alert ("Saving state at" +path);
+}
+
+/* Needed to work-around a race condition in Chrome, where the frame sizes 
+ * may not be initialized after onload (as the docs say it should)
+ */
+window.addEventListener("load", function() {setTimeout(init, 100);}, false);
+
+</script>
+
+</head>
+<frameset rows="85, *" >
+  <frame name="control" src="asm-control.html" >
+
+  <frameset cols="30%, *">
+    <frame name="assembly" src="asm-tree.html">
+    <frame name="view" src="asm-view3d.html" 
+       marginwidth="0" marginheight="0" scrolling="no">
+  </frameset>
+
+</frameset>
+</html>

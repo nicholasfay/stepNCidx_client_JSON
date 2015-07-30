@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>STEP-NC Machine Viewer</title>
+
+<script src="sti_utils.js"> </script>
+
+<script>
+function init() {
+    var view_frame = window.view;
+    var ctl_frame = window.control;
+    var wp_frame = window.workplan;
+
+    if (!view_frame)
+        throw new Error ("No view frame");
+
+    var view = view_frame.setupPage(wp_frame.getWorkplanNode(), ctl_frame, 
+                                    parse_search(location.search));
+    ctl_frame.setViewer(view_frame);
+
+    view_frame.draw();
+}
+
+/* Needed to work-around a race condition in Chrome, where the frame sizes 
+ * may not be initialized after onload (as the docs say it should)
+ */
+onload = function() {setTimeout(init, 100);}
+
+</script>
+
+</head>
+<frameset rows="85, *" >
+  <frame name="control" src="nc-control.html" >
+
+  <frameset cols="30%, *">
+    <frame name="workplan" src="workplan.html">
+    <frame name="view" src="nc-view3d.html" 
+       marginwidth="0" marginheight="0" scrolling="no">
+  </frameset>
+
+</frameset>
+</html>

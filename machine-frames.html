@@ -1,0 +1,43 @@
+<html>
+<head>
+<title>STEP-NC Machine Viewer</title>
+
+<script src="sti_utils.js"> </script>
+
+<script>
+function init() {
+    var view_frame = window.view;
+    var ctl_frame = window.control;
+    var axes_frame = window.axes;
+
+    if (!view_frame)
+        throw new Error ("No view frame");
+
+    var view = view_frame.setup_page(parse_search(location.search),
+        function() {
+          ctl_frame.setViewer(view_frame);
+          axes_frame.setViewer(window.view);
+        });
+}
+
+/* Needed to work-around a race condition in Chrome, where the frame sizes 
+ * may not be initialized after onload (as the docs say it should)
+ */
+window.addEventListener("load", function() {setTimeout(init, 100);}, false);
+
+</script>
+
+</head>
+<frameset rows="85, *">
+  <frame name="control" src="machine-control.html" >
+
+  <frameset cols="*, 30%">
+    <frame name="view" src="machine-view3d.html" 
+       marginwidth="0" marginheight="0" scrolling="no">
+    <frame name="axes" src="machine-axis.html">
+  </frameset>
+
+</frameset>
+
+
+</html>

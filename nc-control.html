@@ -1,0 +1,238 @@
+<html>
+<head>
+
+<style type="text/css">
+.group {padding-right: 2em; white-space: nowrap;}
+</style>
+
+<script>
+var VIEW_FRAME;
+
+function setViewer(v) {VIEW_FRAME=v;}
+
+
+function getGeomView() {return VIEW_FRAME.getGeomView();}
+
+function getMachineState() {return getGeomView().getScenegraph();}
+
+function getView() {return getGeomView().getView();}
+
+function redrawView() {VIEW_FRAME.draw();}
+
+function syncForm() {
+    var form = document.controls;
+    form.zoom.value = getView().getZoom();
+}
+
+function zoom_view(e) {
+  var zoom = parseFloat(e.form.zoom.value);
+  if (isNaN(zoom))
+    throw new Error ("Could not parse zoom as number: " +zoom);
+  getView().setZoom(zoom);
+  redrawView();
+}
+
+function zoom_in(e) {
+  var zoom = getView().getZoom() * 1.5;
+  getView().setZoom(zoom);
+
+  syncForm();
+  redrawView();
+}
+
+function zoom_out(e) {
+  var zoom = getView().getZoom() / 1.5;
+  getView().setZoom(zoom);
+
+  syncForm();
+
+  redrawView();
+}
+
+function mode_change(m) {
+  console.log ("Mode change "+m);
+
+  getGeomView().setMouseMode(m);
+}
+
+var TP_LENGTH;
+
+function setToolpath(l, offset) {
+
+  TP_LENGTH = Math.ceil(l * 1000) / 1000;
+
+  var s = new String(TP_LENGTH);
+  document.getElementById("pathlen").innerHTML = s;
+
+  document.controls.path_pos.value = offset;
+}
+
+function update_toolpath(e) {
+  var val = e.form.path_pos.value;
+
+  getMachineState().setToolPos(val);
+  redrawView();
+}
+
+function tp_fwd(e) {
+  var val = parseFloat(e.form.path_pos.value);
+  val += TP_LENGTH / 200.;
+
+  getMachineState().setToolPos(val);
+  redrawView();
+}
+
+function tp_play(e, ui) {
+  var val = parseFloat(e.form.path_pos.value);
+  val += TP_LENGTH / 200.;
+
+  if (ui && e.timeout) {
+    clearTimeout(e.timeout);
+    e.timeout = null;
+    return;
+  }
+
+  if (val >= TP_LENGTH) {
+    val = TP_LENGTH;
+    e.timeout = null;
+  } 
+  else {
+    e.timeout = setTimeout(tp_play, 100, e, false);
+  }
+
+  getMachineState().setToolPos(val);
+  redrawView();
+}
+
+function tp_stop(e) {
+  cancelTimeout(e.timeout);
+}
+
+function tp_back(e) {
+  var val = parseFloat(e.form.path_pos.value);
+  val -= TP_LENGTH / 200.;
+
+  getMachineState().setToolPos(val);
+  redrawView();
+}
+
+function set_machine(e) {
+
+    var val = e.options[e.selectedIndex].value;
+    if (val == "")
+      val = null;
+
+    getMachineState().setMachine(val);
+    syncForm();
+    redrawView();
+  
+}
+
+function set_visible(e) {
+    var name=e.name;
+    var checked = e.checked;
+//    console.log ("Set Visible: "+name+" "+checked);
+    
+    var ms = getMachineState();
+    switch (name) {
+       case "part":     ms.setVisiblePart(checked);    break;
+       case "fixture":  ms.setVisibleFixture(checked); break;
+       case "machine":  ms.setVisibleMachine(checked); break;
+       case "tool":     ms.setVisibleTool(checked);    break;
+       case "toolpath": ms.setVisibleToolpath(checked);break;
+       case "annotation": ms.setVisibleAnnotations(checked);break;
+    }
+
+    redrawView();
+}
+
+</script>
+
+</head>
+
+<body onload="document.controls.reset()">
+
+<form name="controls" onsubmit="return false;">
+<table width="100%">
+<tr>
+<td><img src=images/stlogo_sm.gif></td>
+<td>
+
+<table width="100%">
+<tr>
+<td>
+
+<span class="group">
+<input type="radio" name="mode" value="rotate" onchange="mode_change('rotate')" checked><b>Rotate</b>
+<input type="radio" name="mode" value="pan" onchange="mode_change('pan')">
+<b>Pan</b>
+</span>
+
+<span class="group">
+<b>Zoom:</b> <input name="zoom" type="text" size=5 onchange="zoom_view(this);" value="1.0" > 
+<input type="button" value="+" onClick='zoom_in(this);'>
+<input type="button" value="-" onClick='zoom_out(this);'>
+</span>
+
+<span class="group">
+<b>Tool position:</b> 
+<input name="path_pos" type="text" onchange="update_toolpath(this)" size="10">
+/ <span id="pathlen"></span>
+<input type="button" value="+" onClick="tp_fwd(this);">
+<input type="button" value="-" onClick="tp_back(this);">
+<input type="button" value="play" onClick="tp_play(this, true);">
+</span>
+
+
+<span class="group">
+<b>Machine: </b>
+<select name="machine" onchange="set_machine(this);"">
+<option value="">No machine</option>
+<option value="trunnion/">5-Axis Trunnion</option>
+<option value="hermle/">Hermle 5 Axis</option>
+<option value="dmg/">DMG Nutating</option>
+<option value="northwood/">Northwood Gantry Machine</option>
+<option value="haas-mini-mill/">Haas Mini-Mill</option>
+<!-- 
+<option value="hmc-tombstone-w.xml">Horizontal Machining Center</option>
+-->
+</select>
+</span>
+
+<span class="group">
+<input type="checkbox" name="part" checked onchange="set_visible(this)" >
+<b>Part</b>
+
+<input type="checkbox" name="fixture" checked onchange="set_visible(this)">
+<b>Fixture</b>
+
+<input type="checkbox" name="machine" checked onchange="set_visible(this)">
+<b>Machine</b>
+
+<input type="checkbox" name="tool" checked onchange="set_visible(this)">
+<b>Tool</b>
+
+<input type="checkbox" name="toolpath" checked onchange="set_visible(this)">
+<b>Toolpath</b>
+
+<input type="checkbox" name="annotation" checked onchange="set_visible(this)">
+<b>Annotations</b>
+</span>
+
+</td>
+</tr>
+
+</table>
+
+</td>
+<td>
+<p style="font-size: 80%; text-align: right;">
+<a href="http://www.steptools.com/" TARGET="_top">[steptools.com]</a><br>
+<a href="index.html" TARGET="_top">[back]</a>
+</td>
+</tr>
+</table>
+</form>
+
+</body>
+</html>

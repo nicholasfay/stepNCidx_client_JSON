@@ -1,0 +1,151 @@
+<html>
+<head>
+<script src="sti_utils.js"> </script>
+
+<script src="GeomView.js"> </script>
+<script src="SceneGraph.js" > </script>
+
+<script src="xml2json.js"> </script>
+<script src="json2xml.js"> </script>
+<script src="Annotation.js" > </script>
+<script src="Assembly.js" > </script>
+<script src="BoundingBox.js"> </script>
+<script src="DataLoader.js"> </script>
+<script src="Executable.js"> </script>
+<script src="GLTransform.js" > </script>
+<script src="MachineDriver.js" > </script>
+<script src="MachineModel.js" > </script>
+<script src="Menu.js" > </script>
+<script src="Operation.js" > </script>
+<script src="Placement.js" > </script>
+<script src="Project.js" > </script>
+<script src="Selective.js" > </script>
+<script src="Shape.js" > </script>
+<script src="ShapeBuilder.js" > </script>
+<script src="Shell.js" > </script>
+<script src="Tree.js" > </script>
+<script src="ViewVolume.js" > </script>
+<script src="Workingstep.js" > </script>
+<script src="Workplan.js" > </script>
+<script src="webgl-utils.js"> </script>
+<script src="gl-matrix.js"> </script>
+
+
+<script src="view3d.js" > </script>
+
+<script>
+"use strict";
+
+// The maximum number of facets to load be default
+var MAX_COST=250000
+
+var LOADER = new DataLoader();
+
+function setup_page(asm_frame, params, init_fn) {
+    LOADER.status_element = window.document.getElementById("status");
+
+    var asm_tree = asm_frame.getAssemblyNode();
+    var c = document.getElementById('wgl');
+    resize_canvas(c);
+    
+    VIEWER = new GeomView(c);
+
+    var ASSEMBLY = Assembly.load(VIEWER, asm_tree, params, 
+        function(asm) {
+          asm_frame.ASSEMBLY = asm;
+          asm_frame.collapse_all();
+          if (init_fn) init_fn(VIEWER);
+        });
+
+    VIEWER.draw();
+
+    window.addEventListener("resize", 
+       function() {
+          resize_canvas(c);
+          VIEWER.draw();
+       }, false);
+}
+
+function draw() {VIEWER.draw();}
+</script>
+
+<style type-"text/css">
+#status {
+    background: white;
+    position: fixed;  
+    top : 10px;
+    left : 10px;
+}
+
+
+.menu li:hover {
+    border: 1px solid black;
+    background: #dde8dd;
+}
+
+.menu li { 
+    whitespace: nowrap;
+    border: 1px solid white;
+}
+
+.menu {
+    border: 1px solid black;
+    position:absolute;
+    white-space: nowrap;
+    display: none;
+    background: white;
+}
+
+.menu ul {
+    list-style-type: none;
+    padding: .5em;
+    margin: 0;
+}
+
+.menu-visible {
+    display:block;
+}
+
+#menu_download {
+    display:none;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div id="status"></div>
+
+
+<div class="menu" id="menu">
+<ul>
+<li class="menu_select_show">Select / Show</li>
+<li class="menu_hide">Hide</li>
+<li class="menu_show_only">Show Only This</li>
+<li class="menu_show_all">Show All</li>
+<hr>
+<li class="menu_toggle_select">Toggle Selection</li>
+<li class="menu_unselect_all">Clear Selection</li>
+<li class="menu_select_all">Select all Instances</li>
+<li class="menu_select_parent">Select Parent</li>
+<hr>
+<li class="menu_open_subpart">Open in New Window</li>
+<hr>
+<li class="menu_props">Download STEP File</li>
+<li id="menu_download" class="menu_nothing"></li>
+</ul>  
+</div>
+
+
+<canvas id="wgl" >
+  This page requires a browser that supports HTML5 and WebGL.<br/>
+  Go to <a href="http://get.webgl.org" TARGET="_top">get.webgl.org</a>
+  to find out more.
+</canvas>
+
+
+</body>
+</html>

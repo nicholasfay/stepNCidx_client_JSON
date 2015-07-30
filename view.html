@@ -1,0 +1,144 @@
+<html>
+<head>
+<title>STEP Geometry Viewer</title>
+
+<script src="sti_utils.js"> </script>
+
+<script src="Assembly.js" > </script>
+<script src="BoundingBox.js" > </script>
+<script src="Executable.js" > </script>
+<script src="GeomView.js" > </script>
+<script src="GLTransform.js" > </script>
+<script src="Operation.js" > </script>
+<script src="Placement.js" > </script>
+<script src="Project.js" > </script>
+<script src="Shape.js" > </script>
+<script src="ShapeBuilder.js" > </script>
+<script src="Shell.js" > </script>
+<script src="SceneGraph.js" > </script>
+<script src="Toolpath.js" > </script>
+<script src="ViewVolume.js" > </script>
+<script src="Workingstep.js" > </script>
+<script src="Workplan.js" > </script>
+
+<script src="webgl-utils.js"> </script>
+<!--<script src="webgl-debug.js"> </script>-->
+<script src="gl-matrix.js"> </script>
+
+
+<script id="vshader" type="x-shader/x-vertex">
+    uniform mat4 u_modelViewProjMatrix;
+    uniform mat3 u_normalMatrix;
+    uniform vec3 lightDir;
+
+    /* is the light on */
+    uniform bool light_on;
+
+    attribute vec3 vNormal;
+    attribute vec4 vColor;
+    attribute vec4 vPosition;
+
+    varying float v_Dot;
+    varying vec4 v_Color;
+
+    void main()
+    {
+        gl_Position = u_modelViewProjMatrix * vPosition;
+        v_Color = vColor;
+
+        if (light_on) {
+            /* if u_normalMatrix were normalized, the call to normalize() 
+             * here would not be necessary */
+            vec3 transNormal = normalize(u_normalMatrix * vNormal);
+            v_Dot = max(dot(transNormal.xyz, lightDir), 0.0);
+        } 
+        else {
+            v_Dot = 1.;
+        }
+    }
+</script>
+
+<script id="fshader" type="x-shader/x-fragment">
+    precision mediump float;
+
+    varying float v_Dot;
+    varying vec4 v_Color;
+
+    void main()
+    {
+        gl_FragColor = vec4(v_Color.xyz * v_Dot, v_Color.a);
+    }
+</script>
+
+<script>
+var VIEWER;
+
+function setup_page() {
+
+    var c = document.getElementById('example');
+    var w = Math.floor(window.innerWidth - 30);
+    var h = Math.floor(window.innerHeight - 30) - 40;
+
+    c.width = w;
+    c.height = h;
+    
+    VIEWER = new GeomView(c, "vshader", "fshader");
+    VIEWER.loadScenegraph(new Project(load_document("project.JSON").documentElement));
+    
+    VIEWER.draw();
+}
+
+function zoom_view(e) {
+  var zoom = parseFloat(e.form.zoom.value);
+  if (isNaN(zoom))
+    throw new Error ("Could not parse zoom as number: " +zoom);
+  VIEWER.scene.setZoom(zoom);
+  VIEWER.draw();
+}
+
+function zoom_in(e) {
+  var zoom = VIEWER.scene.getZoom() * 1.5;
+  VIEWER.scene.setZoom(zoom);
+
+  e.form.zoom.value = zoom;
+
+  VIEWER.draw();
+}
+
+function zoom_out(e) {
+  var zoom = VIEWER.scene.getZoom() / 1.5;
+  VIEWER.scene.setZoom(zoom);
+
+  e.form.zoom.value = zoom;
+
+  VIEWER.draw();
+}
+
+function mode_change(m) {
+  console.log ("Mode change "+m);
+
+  VIEWER.setMouseMode(m);
+}
+
+</script>
+
+</head>
+
+<body onload="setup_page()">
+
+<canvas id="example">
+    If you're seeing this your web browser doesn't support the &lt;canvas>&gt; element. Ouch!
+</canvas>
+
+<form name="controls" onsubmit="return false;">
+<input type="radio" name="mode" value="rotate" onchange="mode_change('rotate')"
+    checked>Rotate
+<input type="radio" name="mode" value="pan" onchange="mode_change('pan')">Pan
+<br>
+ Zoom: <input name="zoom" type="text" value="1.0" > 
+<input type="button" value="update" onClick='zoom_view(this);'>
+<input type="button" value="+" onClick='zoom_in(this);'>
+<input type="button" value="-" onClick='zoom_out(this);'><br>
+</form>
+
+</body>

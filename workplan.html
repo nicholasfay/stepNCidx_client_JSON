@@ -1,0 +1,41 @@
+<html>
+
+<head>
+<script>
+function getWorkplanNode() {return document.getElementById("workplan");}
+</script>
+
+
+
+<style type="text/css">
+
+
+.invisible {font-weight: normal}
+.visible {font-weight: bold}
+
+/* for collapsible tree nodes */
+LI {
+    list-style-type: none;
+
+    /* Disable selection of menu items.  Otherwise, stuff gets highlighted,
+     * when the tree nodes are toggled.
+     */
+    -moz-user-select: none;
+}
+
+UL {list-style-image: url(minus.gif)} 
+LI.closed {list-style-image: url(plus.gif)} 
+LI.closed UL {display: none}
+LI.leaf {list-style-image: url(bullet.gif)} 
+
+</style>
+
+
+</head>
+
+<body>
+<P><b>Machining Workplan</b> (click to select)
+<p>
+<span id="workplan"></span>
+</body>
+</html>

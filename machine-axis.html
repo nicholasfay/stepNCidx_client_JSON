@@ -1,0 +1,164 @@
+<html>
+<head>
+
+<script>
+"use strict";
+
+var VIEW_WINDOW;
+
+function setViewer(v, win) {
+  console.log ("Setting viewer to "+v);
+  VIEW_WINDOW=v;
+
+  /* Hide the controls for the axes we do not have */
+  var axes=["x", "y", "z", "a", "b", "c", "d", "e"];
+  for (var i=0; i<axes.length; i++) {
+      var ax_name = axes[i];
+      if (!VIEW_WINDOW.has_axis(ax_name)) {
+          var el_name = ax_name + "_axis";
+          var el = document.getElementById(el_name);
+          if (!el) throw new Error ("Could not get element "+el_name);
+          el.style.display = "none";
+      }
+  }
+
+}
+
+function setAxis(e, ax) {
+
+  var val = parseFloat(e.value);    
+  if (isNaN(val))
+    throw new Error("Could not parse axis value as float");
+
+  VIEW_WINDOW.set_axis(ax, val);
+  VIEW_WINDOW.draw();
+
+  return true;
+}
+
+function move_axis(e, ax, dir) {
+  var offset;  
+
+  if (ax=='x' || ax=='y' || ax=='z') {
+    /* For linear axes, use 1/50 of the distance */
+    var min = VIEW_WINDOW.MACHINE.getAxisMin(ax);
+    var max = VIEW_WINDOW.MACHINE.getAxisMax(ax);
+
+    offset = (max-min) / 50;
+  } else {
+    /* For rotational axes, use 5 degrees */
+    offset = 5.;
+  }
+
+  var val = VIEW_WINDOW.MACHINE.getAxis(ax) + offset *dir;
+
+  var text = e.form["axis_"+ax];
+  text.value = val;
+  setAxis(text, ax);
+}
+
+</script>
+
+</head>
+
+
+<body>
+
+<form name="axes" onsubmit="return false;">
+
+<table>
+
+<tr id="x_axis">
+<td>x: </td>
+<td>
+<input name="axis_x" type="text" onchange="return setAxis(this, 'x');" value="0.0" >
+</td>
+<td>
+<input type="button" value="+" onClick="move_axis(this, 'x', 1);">
+<input type="button" value="-" onClick="move_axis(this, 'x', -1);">
+</td>
+</tr>
+
+<tr id="y_axis">
+<td>y: </td>
+<td>
+<input name="axis_y" type="text" onchange="return setAxis(this, 'y');" value="0.0" >
+</td>
+<td>
+<input type="button" value="+" onClick="move_axis(this,'y', 1);">
+<input type="button" value="-" onClick="move_axis(this,'y', -1);">
+</td>
+</tr>
+
+<tr id="z_axis">
+<td>z: </td>
+<td>
+<input name="axis_z" type="text" onchange="return setAxis(this, 'z');" value="0.0" >
+</td>
+<td>
+<input type="button" value="+" onClick="move_axis(this, 'z', 1);">
+<input type="button" value="-" onClick="move_axis(this, 'z', -1);">
+</td>
+</tr>
+
+<tr id="a_axis">
+<td>a: </td>
+<td>
+<input name="axis_a" type="text" onchange="return setAxis(this, 'a');" value="0.0" >
+</td>
+<td>
+<input type="button" value="+" onClick="move_axis(this, 'a', 1);">
+<input type="button" value="-" onClick="move_axis(this, 'a', -1);">
+</td>
+</tr>
+
+<tr id="b_axis">
+<td>b: </td>
+<td>
+<input name="axis_b" type="text" onchange="return setAxis(this, 'b');" value="0.0" >
+</td>
+<td>
+<input type="button" value="+" onClick="move_axis(this, 'b', 1);">
+<input type="button" value="-" onClick="move_axis(this, 'b', -1);">
+</td>
+</tr>
+
+<tr id="c_axis">
+<td>c: </td>
+<td>
+<input name="axis_c" type="text" onchange="return setAxis(this, 'c');" value="0.0" >
+</td>
+<td>
+<input type="button" value="+" onClick="move_axis(this, 'c', 1);">
+<input type="button" value="-" onClick="move_axis(this, 'c', -1);">
+</td>
+</tr>
+
+<tr id="d_axis">
+<td>d: </td>
+<td>
+<input name="axis_d" type="text" onchange="return setAxis(this, 'd');" value="0.0" >
+</td>
+<td>
+<input type="button" value="+" onClick="move_axis(this, 'd', 1);">
+<input type="button" value="-" onClick="move_axis(this, 'd', -1);">
+</td>
+</tr>
+
+<tr id="e_axis">
+<td>e: </td>
+<td>
+<input name="axis_e" type="text" onchange="return setAxis(this, 'e');" value="0.0" >
+</td>
+<td>
+<input type="button" value="+" onClick="move_axis(this, 'e', 1);">
+<input type="button" value="-" onClick="move_axis(this, 'e', -1);">
+</td>
+</tr>
+
+</table>
+
+<form>
+
+</body>
+</html>

@@ -1,0 +1,213 @@
+==
+== ST-WebGL Viewer.
+==
+
+Changes in release 1.7 (2012-11-07)
+
+* Added this NEWS file to release.
+
+* UI tweaks to the part context menu
+
+* Forced context menu to not move off the screen to the right.  
+  (Bottom was already handled.)
+
+* Changed red color for selected items to be a bit brighter
+
+* Added save support for natsim server
+
+Changes in release 1.6 (2012-08-14)
+
+* Moved edit links functionality to the context menu.
+
+* Added picking support.
+
+* Moved all the STEP Tool deployment info (html and data) to stpidx.
+
+* Updated NC code to use DataLoader
+
+* Updated NC code to use collapsible HTML Tree.
+
+* Renamed STEP-NC HTML to have nc- prefix.  (frames.html -> nc-frames.html,
+ control.html -> nc-control.html)
+
+* Sorted the items in the assembly tree. 
+
+* Improved data loading code to be interruptable to avoid freezing the UI.
+
+* Added visual feedback for selection
+
+* Added event handling code to pop-down the menu when a click outside the menu
+  is made
+
+* Made visibility management code much more robust
+
+* Highlighted element that menu was clicked over
+
+* Moved the menu to place it on the screen, if necessary.
+
+* Fixed bug where it was impossible to add to the set of loaded items when 
+  starting from a save file.
+
+* Expand the assembly tree as parts are loaded.
+
+* Added "Loading" message when items are being loaded
+
+* Added warning before a user loads a lot of data.
+
+* Added links to STEP files in the data
+
+* Fixed regression in STEP-NC data
+
+
+Changes in release 1.5 (2012-07-03)
+
+* Added support for incremetal loading.
+
+* Added context menu to loading parts.
+
+* Added selection feature to UI
+
+Changes in release 1.4 (2012-05-14)
+
+* Changed BG color for better contrast with dark shapes.
+
+* Added code to collapse/expand assembly tree
+
+* Made items in assembly tree gray if the geometry was missing.
+
+Changes in release 1.4 (2012-04-25)
+
+* Added "Save State" functionality to assembly viewer.
+
+* Added Hypertext links to assembly nodes.
+
+* Added hypertext link editor.
+
+Changes in release 1.4 (2012-04-25)
+
+* Removed annotations from bbox computation.
+
+* Added assembly viewer
+
+Changes in release 1.3 (2012-03-13)
+
+* Fixed code to work where there is no setup (e.g. the moldy data set).
+
+* Display polyline annotations.
+
+Changes in release 1.2 (2012-03-07)
+
+* Split modelview and project matrix in vertex shader.
+
+* Updated shaders to use multiple, better lights to provide better contrast 
+  for parallel faces.  In the process, moved most of the functionality to the
+  fragment shader.
+
+Changes in release 1.1 (2012-03-05)  (internal)
+
+* Fixed regression in machine tool viewer where zoom +/- was not working
+
+* Extended Shell object to support individual faces.  Earlier, we had assumed
+  that there was a single <facets> element in the shell which contained all the
+  facets for the shell.  We updated the file format to allow multiple 
+  <facets> sets, each of which corresponds to a face, and each of which may have
+  its own color.
+
+* Added color support to shells
+
+* Added Makefile targets to build zips and install stuff.
+
+Changes in release 1.0 (2012-02-02)
+
+* Move initialization to a timeout function to avoid a race conditions
+  in Chrome where the window size comes up as 0x0, resulting in the
+  canvas not getting propertly initialized.
+
+* Added play button to automatically advance the tool along the toolpath.
+
+* Calling it 1.0 since this represents the closure of the SBIR Pase 1 Option,
+  and we now have a basic, functional tool.
+
+Changes in release 0.6 (2012-02-01)
+
+* Added controls to selectivly show/hide part, machine, tool, toolpath
+  and fixture.
+
+* Added UI to allow switching between several (or no) machine tools at
+  runtime.
+
+* Added machine drivers to allow machine tool visualization drived by
+  STEP-NC data.
+
+* Added support for fixtures.
+
+* Refactored low-level code to use a unique ViewVolume for each machine 
+
+* Update GeomView to make the ViewVolume a method on the scenegraph
+  (optionally) for those cases where multiple ViewVolumes are
+  required.  Simple cases (single instances) are still managed by the
+  GeomView.
+
+* Added unit conversion code to machine models and part
+
+* Fixed shape bbox computation to use inverse transform.
+
+Changes in release 0.5 (2012-01-03)
+
+* Updated license/copyright header to BSD-style permissive license, as
+  we use for demos
+
+* Added support for displaying and controlling machines with
+  rotational axes.
+
+* Hide controls for axes that do not exist on a given machine.
+
+* Updated behavior of +/- button on axis controls.  For rotational axes, moves
+  axis by 5 degrees; for linear, moves it 2% of total axis distance.
+
+Changes in release 0.5 (2011-12-21)
+
+* Prettied up for web release
+
+* Added machine tool viewer (machine-frames.html)
+
+Changes in release 0.4 (2011-12-02)
+
+* Removed STRLs from tree display.
+
+Changes in release 0.3 (2011-12-01)
+
+* Added code allow multiple to_be elements to be specified in the
+  toolpath.
+
+* Resolved the best to_be for the current WS.
+
+* Internal changes to allow save and restore of color state
+
+* Added suppoort for selective workplan elements.
+
+* Moved color and transform state code into WebGLRenderingContext
+  rather than their own methods.
+
+Changes in release 0.2 (2011-11-22)
+
+* Added code to display and move tool along toolpath
+
+* Added user interface to update tool position.
+
+
+Changes in release 0.1 (2011-11-18)
+
+* Construct the workplan tree
+
+* Display toolpaths on the impeller part.
+
+* Created frames for workplan, control and 3d viewer.
+
+* Added AP238 support
+
+
+Changes in release 0.0 (2011-11-02)
+
+* Got a rough demo that displays assemblies and allows interactive
+  manipulation.

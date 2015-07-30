@@ -1,0 +1,93 @@
+<html>
+<head>
+<script src="sti_utils.js"> </script>
+<script src="BoundingBox.js" > </script>
+<script src="DataLoader.js"> </script>
+<script src="Executable.js" > </script>
+<script src="GeomView.js" > </script>
+<script src="GLTransform.js" > </script>
+<script src="MachineDriver.js" > </script>
+<script src="MachineModel.js" > </script>
+<script src="Operation.js" > </script>
+<script src="Placement.js" > </script>
+<script src="Project.js" > </script>
+<script src="Selective.js" > </script>
+<script src="Scenegraph.js" > </script>
+<script src="Shape.js" > </script>
+<script src="ShapeBuilder.js" > </script>
+<script src="Shell.js" > </script>
+<script src="SceneGraph.js" > </script>
+<script src="Toolpath.js" > </script>
+<script src="ViewVolume.js" > </script>
+<script src="Workingstep.js" > </script>
+<script src="Workplan.js" > </script>
+<script src="webgl-utils.js"> </script>
+<script src="gl-matrix.js"> </script>
+
+<script src="view3d.js" > </script>
+
+<script>
+"use strict";
+
+var MACHINE;
+var LOADER = new DataLoader();
+
+function setup_page(url, after_fn) {
+    LOADER.status_element = window.document.getElementById("status");
+
+    var c = document.getElementById('wgl');
+    resize_canvas(c);
+    
+    VIEWER = new GeomView(c);
+
+    window.onresize = function() {
+        resize_canvas(c);
+        VIEWER.draw();
+    };
+
+   VIEWER.draw();
+
+    LOADER.addRequest(url, function(doc) {
+        LOADER.setRequestBase(url);
+        MACHINE = new MachineModel(doc.documentElement, VIEWER.gl);
+        VIEWER.loadScenegraph(MACHINE);
+        VIEWER.draw();
+        if (after_fn) after_fn();
+    });
+
+    return VIEWER;
+}
+
+function set_axis(ax, val) {
+    MACHINE.setAxis(ax, val);
+}
+
+function has_axis(ax) {
+    return MACHINE.hasAxis(ax);
+}
+
+function draw() {VIEWER.draw();}
+</script>
+
+</head>
+
+<style type-"text/css">
+#status {
+    background: white;
+    position: fixed;  
+    top : 10px;
+    left : 10px;
+}
+</style>
+
+<body>
+
+<div id="status"></div>
+<canvas id="wgl" >
+  This page requires a browser that supports HTML5 and WebGL.<br/>
+  Go to <a href="http://get.webgl.org" TARGET="_top">get.webgl.org</a>
+  to find out more.
+</canvas>
+
+</body>
+</html>

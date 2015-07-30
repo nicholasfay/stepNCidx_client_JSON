@@ -1,0 +1,39 @@
+<html>
+<head>
+<title>Save State - Help</title>
+</head>
+
+<body>
+<h1>Help - Save State</h1>
+
+<p>
+The assembly viewer allows the visual state of the viewer to be preserved,
+and used as the startup for a future startup.  The items that are saved are
+the visibility of parts, the rotation, zoom and pan, and well as the added
+links.
+<p>
+
+<p>  
+The save data is an XML file which is placed on the server with the STEP
+assembly data.  At present we have not yet implemented the server-side
+support, so you will need to manually place the save file in the directory
+containing the data.  (This requires write access to the server.)  The <b>Save
+State</b> button creates a popup containing the XML to save.  Copy and past
+this XML data into a file and save it.  If you do not have write access to the
+server, you can create your own setup, using
+the <a href="stpidx_client.zip">Javascript source</a> and data published 
+<a href="index.html">here</a>.
+</p>
+
+<p>
+The nodes of the assembly tree can be annotated with hypertext links.  These
+links can refer to other parts in the STEP archive, or to any other document
+of the web.  To edit the links, select the <b>Enable Edit Links</b> checkbox,
+and then click on the <b>[Links]</b> tag in the assembly pane.  This will give
+you a popup where you can add edit or remove links to the assembly component.
+</p>
+
+<a href="#" onClick="window.close();">[Close Window]</a>
+
+</body>
+</html>
