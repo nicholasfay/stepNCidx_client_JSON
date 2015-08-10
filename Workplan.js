@@ -37,7 +37,7 @@ function Workplan (builder, id)
         var wp_els = el["elements"];
     else
         var wp_els = [];
-    //console.log(wp_els);
+
     for (var i=0; i<wp_els.length; i++) {
 	var ex = Executable(builder, wp_els[i]);
 	if (ex)

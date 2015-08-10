@@ -27,7 +27,7 @@ function Workingstep(builder, id)
     var ret = builder.make(id, this, "Workingstep");
     if (ret) return ret;
     var el = builder.getElement(id);
-    console.log(el);
+    
     this.initExecutable(builder, el);
     var or = el["orientation"];
     if (or) {

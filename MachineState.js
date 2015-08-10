@@ -121,24 +121,10 @@ METHODS (MachineState, {
 	    this.machine_model = mach;
 
 	else {
-//	    if (this.loading_machine)
-//		return;
-
-//	    this.loading_machine = true;
 	    var self = this;
-
+	    console.log(self);
 	    LOADER.setRequestBase(null);
 	    LOADER.addRequest(url, new MachineModelLoader(this, url, VIEWER.gl));
-	    
-	    // LOADER.addRequest(url, function(doc) {
-	    // 	mach = new MachineModel(doc.documentElement);
-	    // 	var view = new ViewVolume(self.viewer.canvas);
-	    // 	view.setViewBbox(mach.getBoundingBox());
-	    // 	mach.view = view;
-	    // 	self.machine_models[url] = mach;
-	    // 	self.loading_machine = false;
-	    // 	self.machine_model = mach;
-	    // });
 	}
 
     },
@@ -546,8 +532,8 @@ function MachineModelLoader(ms, url, gl) {
 
 METHODS(MachineModelLoader, {
 
-    load : function(doc) {
-	var mach = new MachineModel(doc.documentElement, this.gl, this.url);
+    load: function (json) {
+	var mach = new MachineModel(json["machine-model"], this.gl, this.url);
 	var view = new ViewVolume(this.ms.viewer.canvas);
 	view.setViewBbox(mach.getBoundingBox());
 	mach.view = view;

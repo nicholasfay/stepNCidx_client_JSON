@@ -115,7 +115,6 @@ METHODS(Shell, {
 	
 	if (tree) tree.expand(this);
 	
-	//console.log(el);
 	var verts = getObjects(el['shell']['verts'], 'v');
 	//console.log(verts);
 	var points = new Float32Array(verts.length * 3);
@@ -127,21 +126,18 @@ METHODS(Shell, {
 	    this.color = parse_color(color);
 
 	var faces = getObjects(el['shell'], 'facets');
-	//console.log(faces);
+	//console.log(el["href"]);
 	this.faces = [];
-	//console.log(this.faces);
 	return this.continue_load(verts, points, faces, 0);
 
     },
 
     continue_load : function(verts, points, faces, first) {
-        //console.log("I made it here");
 	if (!this.loading)
 	    return;
-	//console.log("but not here");
+
 	var self = this;
 	var i;
-
 
 	var first_facet=0;
 	if (first >= verts.length)
@@ -155,11 +151,8 @@ METHODS(Shell, {
 						  last_pt); 
 		    }
 		}
-		
 		var pt = verts[i]["p"];
-		//console.log(pt);
 		var coords = pt;
-		//console.log(coords);
 		
 		if (coords.length != 3) {
 		    throw new Error(
@@ -168,20 +161,19 @@ METHODS(Shell, {
 		
 		for (var j=0; j<3; j++) {
 		    var v = parseFloat(coords[j]);
-		    //console.log(v);
+
 		    if (!isFinite(v))
 			throw new Error("Number is not finite");
 		    
 		    this.bbox.updateI(j, v);
 		    points[i * 3 + j] = v;
-		    //console.log(points[i * 3 + j]);
+
 		}
-		//console.log(points);
+
 	    }
 	}
 	    
 	var facet_count = 0;
-
 	for (i=first_facet; i<faces.length; i++) {
 	    var face = new Face(this.gl, faces[i], points);
 	    //console.log(face);
@@ -305,7 +297,7 @@ function Face(gl, el, points)
 	var facet = facets[i];
 	
 	var idxs = facet["v"];
-	//console.log(idxs);
+
 	if (idxs.length != 3) 
 	    throw new Error ("v elements does not have exactly 3 members");
 	

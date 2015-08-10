@@ -25,11 +25,11 @@ function MachineModel(root_el, gl, url)
 {
     var builder = new ShapeBuilder(root_el);
 
-    this.description = root_el.getAttribute("description");
-    this.name = root_el.getAttribute ("name");
-    this.algorithm = root_el.getAttribute ("algorithm");
+    this.description = root_el["description"];
+    this.name = root_el["name"];
+    this.algorithm = root_el["algorithm"];
 
-    var unit = root_el.getAttribute("unit").split(" ");
+    var unit = root_el["unit"].split(" ");
     this.unit_name = unit[0];
     this.unit_cvt = get_float(unit[1]);
 
@@ -40,7 +40,7 @@ function MachineModel(root_el, gl, url)
 
     console.log ("Making frame");
     
-    var frame = root_el.getElementsByTagName("frame")[0];
+    var frame = root_el["frame"];
     if (!frame)
 	throw new Error ("No frame");
 
@@ -50,20 +50,21 @@ function MachineModel(root_el, gl, url)
     
     this.frame = new MachineGeometry(loadables, builder, this.bbox, frame);
 
-    var chains = root_el.getElementsByTagName("chain");
+    var chains = root_el["chain"];
     if (chains.length > 2) 
 	throw new Error ("too many chain elements");
 
     this.axes = {};
     
     for (var i=0; i<chains.length; i++) {
-	var chain = chains[i];
-	var ch_name = chain.getAttribute("name");
+        var chain = chains[i];
+        //console.log(chain);
+	var ch_name = chain["name"];
 
 	var ax_list = [];
 	var rev;
 
-	var loc = parse_float_vec(chain.getAttribute("location"));
+	var loc = chain["location"];
 	console.log ("Location="+loc);
 	
 	if (ch_name == "workpiece") {
@@ -79,10 +80,13 @@ function MachineModel(root_el, gl, url)
 	else
 	    throw new Error ("Have unexpected chain");
 	
-	var axes = chain.getElementsByTagName("axis");
+	if (chain["axis"])
+	    var axes = chain["axis"];
+	else
+	    var axes = [];
 	for (var j=0; j<axes.length; j++) {
 	    var ax = axes[j];
-	    var ax_name = ax.getAttribute("name");
+	    var ax_name = ax["name"];
 //	    console.log ("Have axis "+ax_name);
 
 	    var ax_geom = new MachineAxis(loadables, builder, this.bbox, ax, rev);
@@ -225,7 +229,7 @@ METHODS (MachineModel, {
 
 function MachineGeometry(loadables, builder, bbox, el)
 {
-    var els = el.getElementsByTagName("geom");
+    var els = el["geom"];
 
     this.geom = [];
     this.xforms = [];
@@ -233,9 +237,9 @@ function MachineGeometry(loadables, builder, bbox, el)
     for (var i=0; i<els.length; i++) {
 	var geom = els[i];
 
-	var m = mat4.create(geom.getAttribute("xform").split(" "));
+	var m = mat4.create(geom["xform"]);
 
-	var shell_ids = geom.getAttribute("shell").split(" ");
+	var shell_ids = geom["shell"];
 	for (var j=0; j<shell_ids.length; j++) {
 	    var shell = new Shell(builder, shell_ids[j]);
 	    this.xforms.push(m);
@@ -264,27 +268,27 @@ METHODS (MachineGeometry, {
 
 function MachineAxis(loadables, builder, bbox, el, rev)
 {
-    this.name = el.getAttribute("name");
-    this.min = el.getAttribute("min");
-    this.max = el.getAttribute("max");
+    this.name = el["name"];
+    this.min = el["min"];
+    this.max = el["max"];
 
-    var home = el.getAttribute("home");
+    var home = el["home"];
 
     this.home = home ? get_float(home) : 0.;
     
-    var loc = el.getAttribute("location");
+    var loc = el["location"];
     if (loc) {
-	this.loc = parse_float_vec(loc, 3);
+	this.loc = loc;
     }
 
-    var dir = el.getAttribute("dir");
+    var dir = el["dir"];
     if (dir) {
-	this.dir = parse_float_vec(dir, 3);
+	this.dir = dir;
 	if (!rev)
 	    vec3.scale(this.dir, -1.);
     }
     else {
-	var rev_el = el.getAttribute("reverse");
+	var rev_el = el["reverse"];
 	if (rev_el)
 	    this.reversed = Boolean(rev_el);
 	else {

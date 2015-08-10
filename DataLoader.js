@@ -57,7 +57,7 @@ STATIC(DataLoader, {
 
 METHODS(DataLoader, {
 
-    // Set the base URL for furure requests from the given URL
+    // Set the base URL for future requests from the given URL
     setRequestBase : function(url) {
 
 	if (!url)

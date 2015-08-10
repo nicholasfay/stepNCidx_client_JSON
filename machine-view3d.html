@@ -47,9 +47,9 @@ function setup_page(url, after_fn) {
 
    VIEWER.draw();
 
-    LOADER.addRequest(url, function(doc) {
+    LOADER.addRequest(url, function(json) {
         LOADER.setRequestBase(url);
-        MACHINE = new MachineModel(doc.documentElement, VIEWER.gl);
+        MACHINE = new MachineModel(json["machine-model"], VIEWER.gl);
         VIEWER.loadScenegraph(MACHINE);
         VIEWER.draw();
         if (after_fn) after_fn();

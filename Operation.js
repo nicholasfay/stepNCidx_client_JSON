@@ -27,7 +27,7 @@ function Operation(builder, id)
     var ret = builder.make(id, this, "operation");
     if (ret) return ret;
     var el = builder.getElement(id);
-    console.log(el);
+    
     var tps = get_array_attrib(el, "toolpath");
     this.toolpath = [];
 
@@ -36,8 +36,7 @@ function Operation(builder, id)
 	this.tool_shape = new Shape(builder, toolid);
 
     this.lengths = [];
-    console.log(tps);
-    console.log(toolid);
+    
     var len = 0;
     for (var i=0; i<tps.length; i++) {
 	var tp = new Toolpath(builder, tps[i]);
@@ -49,7 +48,6 @@ function Operation(builder, id)
     this.length = len;
 
     this.tool_length = get_float(el["tool_length"]);
-    console.log(this.tool_length);
 }
 
 METHODS (Operation, {
