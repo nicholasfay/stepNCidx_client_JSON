@@ -1,0 +1,6 @@
+1. Step-NC machine viewer in browser can't handle when going from selecting a machine, back to no machine selected
+2. Add default view button
+3. Fix tool not being connected to machine for boeing and finishing
+4. Play button should reset the toolpath
+5. Should also start from beginning when played without selecting a toolpath.
+6. Should have speed bar for toolpaths
