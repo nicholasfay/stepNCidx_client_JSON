@@ -60,10 +60,11 @@ function MachineState(el, wp_node, ctl, viewer)
     this.show_tool = true;    
     this.show_toolpath = true;
     this.show_annotations = true;
+    this.tp_speed = 200.;
 
     // We may be better off not loading the stuff until it gets drawn
     // FIXME
-    
+    console.log(this);
     for (var i=0; i<loadables.length; i++) {
 //	console.log ("Loading part");
 	loadables[i].loadData(null, viewer.gl);
@@ -91,6 +92,14 @@ METHODS (MachineState, {
 	if (sg.setToolpathPos)
 	    sg.setToolpathPos(this.control, tn, this.tp_offset);
 	
+    },
+
+    setSpeed : function(val){
+        this.tp_speed = parseFloat(val);
+    },
+
+    getSpeed : function(){
+        return this.tp_speed;
     },
     
     setViewer : function(v) {
@@ -122,7 +131,6 @@ METHODS (MachineState, {
 
 	else {
 	    var self = this;
-	    console.log(self);
 	    LOADER.setRequestBase(null);
 	    LOADER.addRequest(url, new MachineModelLoader(this, url, VIEWER.gl));
 	}
@@ -214,7 +222,6 @@ METHODS (MachineState, {
 	
 	if (op) {
 	    var xform = mat4.create(ws_xform);
-//	    mat4.inverse(xform);
 	    
 	    op.getToolPositionByD(loc, axis, this.tp_offset);
 	    mat4.multiplyVec3(xform, loc);

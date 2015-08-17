@@ -7,6 +7,7 @@
 
 <script>
 var VIEW_FRAME;
+var flag = false;
 
 function setViewer(v) {VIEW_FRAME=v;}
 
@@ -67,6 +68,12 @@ function setToolpath(l, offset) {
   document.controls.path_pos.value = offset;
 }
 
+function update_speed(e) {
+    var val = e.value;
+    console.log(val);
+    getMachineState().setSpeed(val);
+}
+
 function update_toolpath(e) {
   var val = e.form.path_pos.value;
 
@@ -76,15 +83,22 @@ function update_toolpath(e) {
 
 function tp_fwd(e) {
   var val = parseFloat(e.form.path_pos.value);
-  val += TP_LENGTH / 200.;
+  val += TP_LENGTH / (parseFloat(getMachineState().getSpeed()));
 
   getMachineState().setToolPos(val);
   redrawView();
 }
 
-function tp_play(e, ui) {
-  var val = parseFloat(e.form.path_pos.value);
-  val += TP_LENGTH / 200.;
+function tp_play(e, ui, iter) {
+    if (flag == true && iter) { //Added in so that play button resets toolpath if played again 
+        var val = 0;
+        flag = false;
+    }
+    else {
+        var val = parseFloat(e.form.path_pos.value);
+    }
+
+  val += TP_LENGTH / (parseFloat(getMachineState().getSpeed()));
 
   if (ui && e.timeout) {
     clearTimeout(e.timeout);
@@ -95,9 +109,10 @@ function tp_play(e, ui) {
   if (val >= TP_LENGTH) {
     val = TP_LENGTH;
     e.timeout = null;
+    flag = true;
   } 
   else {
-    e.timeout = setTimeout(tp_play, 100, e, false);
+    e.timeout = setTimeout(tp_play, 100, e, false, false);
   }
 
   getMachineState().setToolPos(val);
@@ -110,7 +125,7 @@ function tp_stop(e) {
 
 function tp_back(e) {
   var val = parseFloat(e.form.path_pos.value);
-  val -= TP_LENGTH / 200.;
+  val -= TP_LENGTH / (parseFloat(getMachineState().getSpeed()));
 
   getMachineState().setToolPos(val);
   redrawView();
@@ -180,9 +195,8 @@ function set_visible(e) {
 / <span id="pathlen"></span>
 <input type="button" value="+" onClick="tp_fwd(this);">
 <input type="button" value="-" onClick="tp_back(this);">
-<input type="button" value="play" onClick="tp_play(this, true);">
+<input type="button" value="play" onClick="tp_play(this, true, true);">
 </span>
-
 
 <span class="group">
 <b>Machine: </b>
@@ -193,9 +207,6 @@ function set_visible(e) {
 <option value="dmgJSON/">DMG Nutating</option>
 <option value="northwoodJSON/">Northwood Gantry Machine</option>
 <option value="haas-mini-millJSON/">Haas Mini-Mill</option>
-<!-- 
-<option value="hmc-tombstone-w.xml">Horizontal Machining Center</option>
--->
 </select>
 </span>
 
@@ -217,6 +228,11 @@ function set_visible(e) {
 
 <input type="checkbox" name="annotation" checked onchange="set_visible(this)">
 <b>Annotations</b>
+</span>
+
+<span class="group">
+    <b>Tool speed:</b>
+    <input name="tool_speed" type="range" onchange="update_speed(this)" min="10" max="390">
 </span>
 
 </td>

@@ -34,7 +34,6 @@ function ViewVolume(canvas) {
     this.zoom_ratio = 1.;
 
     this.use_perspective = true;
-//    this.use_perspective = false;
     
     this.bound_radius = 0.;
     this.center = [0, 0, 0];
